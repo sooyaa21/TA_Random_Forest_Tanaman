@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantCare AI | Random Forest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="brand">
+        <div class="brand-icon">🌿</div>
+        <div>
+            <h2>PlantCare AI</h2>
+            <small>Random Forest System</small>
+        </div>
+    </div>
+
+    <p class="menu-label">MENU UTAMA</p>
+    <a href="#dashboard" class="menu active">▦ Dashboard</a>
+    <a href="#dataset" class="menu">▤ Data Training</a>
+    <a href="#bootstrap" class="menu">⟳ Bootstrap Sampling</a>
+    <a href="#pohon" class="menu">♧ Pohon Keputusan</a>
+    <a href="#prediksi" class="menu">✦ Prediksi Tanaman</a>
+
+    <div class="sidebar-bottom">
+        <div class="status-dot"></div>
+        <div>
+            <strong>Model Siap Digunakan</strong>
+            <small>Random Forest • 3 Trees</small>
+        </div>
+    </div>
+</div>
+
+<main class="main-content" id="dashboard">
+
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">MACHINE LEARNING / CLASSIFICATION</p>
+            <h1>Dashboard Overview</h1>
+            <p class="subtitle">Sistem prediksi kesehatan tanaman menggunakan algoritma Random Forest.</p>
+        </div>
+        <div class="top-status">● System Online</div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-tag">SMART AGRICULTURE TECHNOLOGY</span>
+            <h2>Kenali Kesehatan<br>Tanaman Lebih Mudah.</h2>
+            <p>
+                Analisis kondisi tanaman berdasarkan warna daun, kelembapan tanah,
+                kondisi batang, dan intensitas cahaya menggunakan tiga pohon keputusan.
+            </p>
+            <a href="#prediksi" class="hero-button">Mulai Prediksi <span>→</span></a>
+        </div>
+        <div class="hero-illustration">🌱</div>
+    </section>
+
+    <section class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon green">▤</div>
+            <p>Total Data Training</p>
+            <h2>14 <span>Data</span></h2>
+            <small>Dataset kesehatan tanaman</small>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">♧</div>
+            <p>Jumlah Decision Tree</p>
+            <h2>03 <span>Pohon</span></h2>
+            <small>Ensemble learning</small>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange">⌘</div>
+            <p>Jumlah Fitur</p>
+            <h2>04 <span>Fitur</span></h2>
+            <small>Atribut kondisi tanaman</small>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon blue">✦</div>
+            <p>Metode Klasifikasi</p>
+            <h2>RF <span>Model</span></h2>
+            <small>Majority Voting</small>
+        </div>
+    </section>
+
+    <section class="section" id="dataset">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">DATA MANAGEMENT</p>
+                <h2>Data Training</h2>
+                <p class="subtitle">Dataset yang digunakan dalam proses pembentukan model.</p>
+            </div>
+            <span class="count-badge">14 Records</span>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Warna Daun</th>
+                        <th>Kelembapan Tanah</th>
+                        <th>Kondisi Batang</th>
+                        <th>Intensitas Cahaya</th>
+                        <th>Kesehatan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data_training %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[3] }}</td>
+                        <td>
+                            <span class="result-badge {{ 'healthy' if row[4] == 'Sehat' else 'unhealthy' }}">
+                                {{ row[4] }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section" id="bootstrap">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">ENSEMBLE PROCESS</p>
+                <h2>Bootstrap Sampling</h2>
+                <p class="subtitle">Pengambilan sampel acak dengan pengembalian untuk tiga pohon keputusan.</p>
+            </div>
+        </div>
+
+        <div class="bootstrap-grid">
+            {% for nama, sampel in bootstrap_samples.items() %}
+            <div class="bootstrap-card">
+                <div class="tree-number">0{{ loop.index }}</div>
+                <h3>{{ nama }}</h3>
+                <p>14 sampel hasil bootstrap</p>
+                <div class="sample-list">
+                    {% for nomor in sampel %}
+                    <span>{{ nomor }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="section" id="pohon">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">DECISION ANALYSIS</p>
+                <h2>Struktur Pohon Keputusan</h2>
+                <p class="subtitle">Akar dan cabang keputusan dari masing-masing pohon.</p>
+            </div>
+        </div>
+
+        <div class="tree-grid">
+            {% for nama, pohon in trees.items() %}
+            <div class="tree-card">
+                <div class="tree-card-header">
+                    <span>DECISION TREE</span>
+                    <strong>{{ nama }}</strong>
+                </div>
+                <div class="tree-root">
+                    <small>ROOT ATTRIBUTE</small>
+                    <h3>{{ pohon.akar }}</h3>
+                </div>
+                <div class="tree-branches">
+                    {% for kondisi, hasil in pohon.cabang.items() %}
+                    <div class="branch-item">
+                        <span class="branch-label">{{ kondisi }}</span>
+                        {% if hasil is mapping %}
+                            <span class="branch-detail">→ {{ hasil.atribut }}</span>
+                        {% else %}
+                            <span class="branch-result {{ 'healthy' if hasil == 'Sehat' else 'unhealthy' }}">
+                                {{ hasil }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="section prediction-section" id="prediksi">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">AI PREDICTION ENGINE</p>
+                <h2>Prediksi Kesehatan Tanaman</h2>
+                <p class="subtitle">Masukkan kondisi tanaman untuk mendapatkan hasil klasifikasi.</p>
+            </div>
+            <span class="count-badge">3 Decision Trees</span>
+        </div>
+
+        <div class="prediction-layout">
+            <div class="prediction-form">
+                <h3>Input Kondisi Tanaman</h3>
+                <p class="form-description">Pilih kondisi yang sesuai dengan tanaman yang akan diperiksa.</p>
+
+                <label for="warna">Warna Daun</label>
+                <select id="warna">
+                    <option value="Hijau">Hijau</option>
+                    <option value="Kuning">Kuning</option>
+                </select>
+
+                <label for="kelembapan">Kelembapan Tanah</label>
+                <select id="kelembapan">
+                    <option value="Lembap">Lembap</option>
+                    <option value="Kering">Kering</option>
+                </select>
+
+                <label for="batang">Kondisi Batang</label>
+                <select id="batang">
+                    <option value="Kuat">Kuat</option>
+                    <option value="Layu">Layu</option>
+                </select>
+
+                <label for="cahaya">Intensitas Cahaya</label>
+                <select id="cahaya">
+                    <option value="Cukup">Cukup</option>
+                    <option value="Kurang">Kurang</option>
+                </select>
+
+                <button type="button" id="predictButton" onclick="prediksiTanaman()">
+                    Analisis Kesehatan Tanaman →
+                </button>
+            </div>
+
+            <div class="prediction-result" id="predictionResult">
+                <div class="result-placeholder">
+                    <div class="placeholder-icon">🌿</div>
+                    <h3>Hasil Prediksi Akan Muncul Di Sini</h3>
+                    <p>Lengkapi kondisi tanaman, kemudian klik tombol analisis untuk melihat hasil dari ketiga pohon keputusan.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <span>PlantCare AI © 2026</span>
+        <span>Random Forest Classification System</span>
+    </footer>
+
+</main>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
